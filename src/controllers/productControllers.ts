@@ -24,7 +24,7 @@ export const getProductList = asyncHandler(
 
 export const getProductSearch = asyncHandler(
 	async (req: Request, res: Response) => {
-		const pageSize: any = req.query.pageSize || 9;
+		const pageSize: any = req.query.pageSize || 8;
 		const page: any = req.query.page || 1;
 
 		const category = req.query.category || '';
