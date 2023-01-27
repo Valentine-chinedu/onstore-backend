@@ -9,7 +9,7 @@
 		"module": "commonjs",
 		"rootDir": "./src",
 
-		//   "outDir": "./dist",
+		"outDir": "./dist",
 
 		"esModuleInterop": true,
 
