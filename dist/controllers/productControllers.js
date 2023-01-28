@@ -35,7 +35,6 @@ exports.getProductSearch = (0, express_async_handler_1.default)((req, res) => __
     const pageSize = req.query.pageSize || 8;
     const page = req.query.page || 1;
     const category = req.query.category || '';
-    const brand = req.query.brand || '';
     const searchQuery = req.query.query || '';
     const queryFilter = searchQuery && searchQuery !== 'all'
         ? {
@@ -46,19 +45,16 @@ exports.getProductSearch = (0, express_async_handler_1.default)((req, res) => __
         }
         : {};
     const categoryFilter = category && category !== 'all' ? { category } : {};
-    const brandFilter = brand && brand !== 'all' ? { brand } : {};
     const categories = yield productModel_1.default.find({}).distinct('category');
-    const brands = yield productModel_1.default.find({}).distinct('brand');
-    const productDocs = yield productModel_1.default.find(Object.assign(Object.assign(Object.assign({}, queryFilter), categoryFilter), brandFilter))
+    const productDocs = yield productModel_1.default.find(Object.assign(Object.assign({}, queryFilter), categoryFilter))
         .skip(pageSize * (page - 1))
         .limit(pageSize)
         .lean();
-    const countProducts = yield productModel_1.default.countDocuments(Object.assign(Object.assign(Object.assign({}, queryFilter), categoryFilter), brandFilter));
+    const countProducts = yield productModel_1.default.countDocuments(Object.assign(Object.assign({}, queryFilter), categoryFilter));
     res.status(200).json({
         countProducts,
         productDocs,
         categories,
-        brands,
         page,
         pages: Math.ceil(countProducts / pageSize),
     });
@@ -80,12 +76,11 @@ exports.getProductById = (0, express_async_handler_1.default)((req, res) => __aw
 // @route   POST /api/products
 // @access  Private/Admin
 exports.createProduct = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, image, description, brand, category, price, qty } = req.body;
+    const { name, image, description, category, price, qty } = req.body;
     const product = new productModel_1.default({
         name,
         image,
         description,
-        brand,
         category,
         price,
         qty,

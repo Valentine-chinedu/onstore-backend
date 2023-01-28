@@ -28,7 +28,6 @@ export const getProductSearch = asyncHandler(
 		const page: any = req.query.page || 1;
 
 		const category = req.query.category || '';
-		const brand = req.query.brand || '';
 		const searchQuery = req.query.query || '';
 
 		const queryFilter =
@@ -41,14 +40,11 @@ export const getProductSearch = asyncHandler(
 				  }
 				: {};
 		const categoryFilter = category && category !== 'all' ? { category } : {};
-		const brandFilter = brand && brand !== 'all' ? { brand } : {};
 
 		const categories = await Product.find({}).distinct('category');
-		const brands = await Product.find({}).distinct('brand');
 		const productDocs = await Product.find({
 			...queryFilter,
 			...categoryFilter,
-			...brandFilter,
 		})
 			.skip(pageSize * (page - 1))
 			.limit(pageSize)
@@ -57,14 +53,12 @@ export const getProductSearch = asyncHandler(
 		const countProducts = await Product.countDocuments({
 			...queryFilter,
 			...categoryFilter,
-			...brandFilter,
 		});
 
 		res.status(200).json({
 			countProducts,
 			productDocs,
 			categories,
-			brands,
 			page,
 			pages: Math.ceil(countProducts / pageSize),
 		});
@@ -94,12 +88,11 @@ export const getProductById = asyncHandler(
 
 export const createProduct = asyncHandler(
 	async (req: Request, res: Response) => {
-		const { name, image, description, brand, category, price, qty } = req.body;
+		const { name, image, description, category, price, qty } = req.body;
 		const product = new Product({
 			name,
 			image,
 			description,
-			brand,
 			category,
 			price,
 			qty,

@@ -12,7 +12,6 @@ interface IProduct {
 	image: string;
 	price: number;
 	category: string;
-	brand: string;
 	description: string;
 	qty?: number;
 	reviews: Review[];
@@ -36,7 +35,6 @@ const productSchema = new Schema<IProduct>(
 		name: { type: String, required: true },
 		image: { type: String, required: true },
 		price: { type: Number, required: true },
-		brand: String,
 		category: { type: String, required: true },
 		description: String,
 		qty: Number,
