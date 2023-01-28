@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index",
 	"scripts": {
+		"build": "npx tsc",
 		"dev": "nodemon src/server.ts",
 		"start": "node ./dist/server.js"
 	},
