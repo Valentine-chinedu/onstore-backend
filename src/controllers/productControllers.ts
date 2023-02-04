@@ -18,6 +18,23 @@ export const getProductList = asyncHandler(
 	}
 );
 
+// @desc    Fetch allCategories
+// @route   GET /api/products/categories
+// @access  Public
+
+export const getCategoryList = asyncHandler(
+	async (req: Request, res: Response) => {
+		const categories = await Product.find({}).distinct('category');
+
+		if (categories) {
+			res.status(200).json(categories);
+		} else {
+			res.status(500);
+			throw new Error('categories not found!');
+		}
+	}
+);
+
 // @desc   Fetch all products with pages for pagination category brand for filter and searchQuery for search
 // @route   GET /api/products/search
 // @access  Public
@@ -62,6 +79,23 @@ export const getProductSearch = asyncHandler(
 			page,
 			pages: Math.ceil(countProducts / pageSize),
 		});
+	}
+);
+
+// @desc    Fetch by category
+// @route   GET /api/products/:category
+// @access  Public
+
+export const getProductByCategory = asyncHandler(
+	async (req: Request, res: Response) => {
+		const category = await Product.find({ category: req.params.category });
+
+		if (category) {
+			res.status(200).json(category);
+		} else {
+			res.status(400);
+			throw new Error('category not found!');
+		}
 	}
 );
 
