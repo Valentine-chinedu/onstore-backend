@@ -88,10 +88,10 @@ export const getProductSearch = asyncHandler(
 
 export const getProductByCategory = asyncHandler(
 	async (req: Request, res: Response) => {
-		const category = await Product.find({ category: req.params.category });
+		const products = await Product.find({ category: req.params.category });
 
-		if (category) {
-			res.status(200).json(category);
+		if (products) {
+			res.status(200).json(products);
 		} else {
 			res.status(400);
 			throw new Error('category not found!');
