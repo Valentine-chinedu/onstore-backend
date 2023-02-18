@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createReview = exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProductById = exports.getProductSearch = exports.getProductList = void 0;
+exports.createReview = exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProductById = exports.getProductByCategory = exports.getProductSearch = exports.getCategoryList = exports.getProductList = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const productModel_1 = __importDefault(require("../models/productModel"));
 // @desc    Fetch 12 products
@@ -26,6 +26,19 @@ exports.getProductList = (0, express_async_handler_1.default)((req, res) => __aw
     else {
         res.status(500);
         throw new Error('products not found!');
+    }
+}));
+// @desc    Fetch allCategories
+// @route   GET /api/products/categories
+// @access  Public
+exports.getCategoryList = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const categories = yield productModel_1.default.find({}).distinct('category');
+    if (categories) {
+        res.status(200).json(categories);
+    }
+    else {
+        res.status(500);
+        throw new Error('categories not found!');
     }
 }));
 // @desc   Fetch all products with pages for pagination category brand for filter and searchQuery for search
@@ -58,6 +71,19 @@ exports.getProductSearch = (0, express_async_handler_1.default)((req, res) => __
         page,
         pages: Math.ceil(countProducts / pageSize),
     });
+}));
+// @desc    Fetch by category
+// @route   GET /api/products/:category
+// @access  Public
+exports.getProductByCategory = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield productModel_1.default.find({ category: req.params.category });
+    if (products) {
+        res.status(200).json(products);
+    }
+    else {
+        res.status(400);
+        throw new Error('category not found!');
+    }
 }));
 // @desc    Fetch single product
 // @route   GET /api/products/:id

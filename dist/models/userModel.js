@@ -19,12 +19,39 @@ const userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, required: true, default: false },
+    carts: [
+        {
+            productId: {
+                type: mongoose_1.Schema.Types.ObjectId,
+                ref: 'Product',
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+            name: {
+                type: String,
+                required: true,
+            },
+            price: {
+                type: Number,
+                required: true,
+            },
+            image: {
+                type: String,
+                required: true,
+            },
+        },
+    ],
 }, {
     timestamps: true,
 });
-// userSchema.methods.matchPassword = async function (enteredPassword: string) {
-//   return await bcrypt.compare(enteredPassword, this.password);
-// };
+userSchema.methods.matchPassword = function (enteredPassword) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield bcryptjs_1.default.compare(enteredPassword, this.password);
+    });
+};
 userSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!this.isModified('password')) {

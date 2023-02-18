@@ -8,6 +8,8 @@ const productControllers_1 = require("../controllers/productControllers");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 router.route('/').get(productControllers_1.getProductList).post(auth_1.auth, auth_1.admin, productControllers_1.createProduct);
+router.route('/categories').get(productControllers_1.getCategoryList);
+router.route('/:category').get(productControllers_1.getProductByCategory);
 router.route('/:id/reviews').post(auth_1.auth, productControllers_1.createReview);
 router.route('/search').get(productControllers_1.getProductSearch);
 router
