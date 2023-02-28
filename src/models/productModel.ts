@@ -18,18 +18,6 @@ interface IProduct {
 	// _id: string;
 }
 
-const reviewSchema = new Schema<Review>(
-	{
-		name: { type: String, required: true, unique: true },
-		rating: { type: Number, required: true },
-		comment: { type: String, required: true },
-		user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-	},
-	{
-		timestamps: true,
-	}
-);
-
 const productSchema = new Schema<IProduct>(
 	{
 		name: { type: String, required: true },
@@ -38,7 +26,6 @@ const productSchema = new Schema<IProduct>(
 		category: { type: String, required: true },
 		description: { type: String, required: true },
 		qty: { type: Number, required: true },
-		reviews: [reviewSchema],
 	},
 	{
 		timestamps: true,
