@@ -1,11 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
-
-type Review = {
-	name: string;
-	rating: number;
-	comment: string;
-	user: Types.ObjectId;
-};
+import { Schema, model } from 'mongoose';
 
 interface IProduct {
 	name: string;
@@ -14,7 +7,7 @@ interface IProduct {
 	category: string;
 	description: string;
 	qty?: number;
-	reviews: Review[];
+
 	// _id: string;
 }
 

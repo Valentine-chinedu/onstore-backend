@@ -1,7 +1,6 @@
 import express from 'express';
 import {
 	createProduct,
-	createReview,
 	deleteProduct,
 	getCategoryList,
 	getProductByCategory,
@@ -17,7 +16,6 @@ const router = express.Router();
 router.route('/').get(getProductList).post(auth, admin, createProduct);
 router.route('/categories').get(getCategoryList);
 router.route('/:category').get(getProductByCategory);
-router.route('/:id/reviews').post(auth, createReview);
 router.route('/search').get(getProductSearch);
 router
 	.route('/:id')
