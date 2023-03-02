@@ -19,7 +19,6 @@ const config_1 = __importDefault(require("./config"));
 dotenv_1.default.config({
     path: path_1.default.resolve(__dirname, '/.env'),
 });
-(0, db_1.default)();
 const app = (0, express_1.default)();
 if (config_1.default.NODE_ENV === 'development') {
     app.use((0, morgan_1.default)('dev'));
@@ -35,4 +34,6 @@ app.use('/uploads', express_1.default.static(path_1.default.join(process.cwd(), 
 app.use(errorMiddleware_1.notFound);
 app.use(errorMiddleware_1.errorHandler);
 const PORT = config_1.default.PORT || 1337;
-const server = app.listen(PORT, () => console.log(`🟢 Server running in ${config_1.default.NODE_ENV} mode on port ${PORT}`));
+(0, db_1.default)().then(() => {
+    app.listen(PORT, () => console.log(`🟢 Server running in ${config_1.default.NODE_ENV} mode on port ${PORT}`));
+});

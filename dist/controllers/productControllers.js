@@ -12,14 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createReview = exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProductById = exports.getProductByCategory = exports.getProductSearch = exports.getCategoryList = exports.getProductList = void 0;
+exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProductById = exports.getProductByCategory = exports.getProductSearch = exports.getCategoryList = exports.getProductList = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const productModel_1 = __importDefault(require("../models/productModel"));
 // @desc    Fetch 12 products
 // @route   GET /api/products
 // @access  Public
 exports.getProductList = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield productModel_1.default.find({}).limit(12);
+    const products = yield productModel_1.default.find({});
     if (products) {
         res.status(200).json(products);
     }
@@ -145,33 +145,5 @@ exports.deleteProduct = (0, express_async_handler_1.default)((req, res) => __awa
     else {
         res.status(400);
         throw new Error('products not found!');
-    }
-}));
-// @desc    Create review
-// @route   POST /api/products/:id/reviews
-// @access  Private
-exports.createReview = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { comment, rating } = req.body;
-    const product = yield productModel_1.default.findById(req.params.id);
-    if (product) {
-        const exist = product.reviews.find((r) => r.user.toString() === req.user._id.toString());
-        if (exist) {
-            res.status(400).json({ message: 'You already reviewed on this product' });
-        }
-        else {
-            const review = {
-                name: req.user.name,
-                rating,
-                comment,
-                user: req.user._id,
-            };
-            product.reviews.push(review);
-            yield product.save();
-            res.status(201).json(product.reviews);
-        }
-    }
-    else {
-        res.status(404);
-        throw new Error('Product not found');
     }
 }));
