@@ -17,6 +17,8 @@ dotenv.config({
 	path: path.resolve(__dirname, '/.env'),
 });
 
+connectDb();
+
 const app: Application = express();
 
 if (sanitizedConfig.NODE_ENV === 'development') {
@@ -39,10 +41,8 @@ app.use(errorHandler);
 
 const PORT: number | string = sanitizedConfig.PORT || 1337;
 
-connectDb().then(() => {
-	app.listen(PORT, () =>
-		console.log(
-			`🟢 Server running in ${sanitizedConfig.NODE_ENV} mode on port ${PORT}`
-		)
-	);
-});
+const server: Server = app.listen(PORT, () =>
+	console.log(
+		`🟢 Server running in ${sanitizedConfig.NODE_ENV} mode on port ${PORT}`
+	)
+);
