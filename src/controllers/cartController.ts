@@ -22,9 +22,11 @@ export const addToCart = async (
 		if (!product) return res.status(404).send('Product not found');
 
 		const cart = user.carts;
-		const index = cart.findIndex((item) => item.productId === productId);
+		const item = cart.find((item) => item.productId === productId);
 
-		if (index < 0) {
+		if (item) {
+			item.quantity++;
+		} else {
 			user.carts.push({
 				productId,
 				quantity,
@@ -32,30 +34,10 @@ export const addToCart = async (
 				price: product.price,
 				image: product.image,
 			});
-		} else {
-			user.carts[index].quantity += quantity;
 		}
 
 		await user.save();
 		return res.send('Product added to cart');
-	} catch (error: any) {
-		return res.status(500).send(error.message);
-	}
-};
-
-export const getCart = async (
-	req: Request<{}, {}, IRequest>,
-	res: Response
-) => {
-	try {
-		const { userId } = req.body;
-		const user = await User.findById(userId);
-		if (!user) return res.status(404).send('User not found');
-
-		const cart = user.carts;
-		if (!cart) return res.status(404).send('Cart not found');
-
-		return res.send(cart);
 	} catch (error: any) {
 		return res.status(500).send(error.message);
 	}
@@ -70,11 +52,7 @@ export const removeFromCart = async (
 		const user = await User.findById(userId);
 		if (!user) return res.status(404).send('User not found');
 
-		const cart = user.carts;
-		const index = cart.findIndex((item) => item.productId === productId);
-		if (index < 0) return res.status(404).send('Product not found in cart');
-
-		user.carts.splice(index, 1);
+		user.carts = user.carts.filter((item) => item.productId !== productId);
 		await user.save();
 		return res.send('Product removed from cart');
 	} catch (error: any) {
@@ -109,9 +87,9 @@ export const increaseCartQty = async (
 		if (!user) return res.status(404).send('User not found');
 
 		const cart = user.carts;
-		const index = cart.findIndex((item) => item.productId === productId);
+		const item = cart.find((item) => item.productId === productId);
 
-		user.carts[index].quantity++;
+		item!.quantity++;
 		await user.save();
 		return res.send('Cart updated');
 	} catch (error: any) {
@@ -129,9 +107,9 @@ export const decreaseCartQty = async (
 		if (!user) return res.status(404).send('User not found');
 
 		const cart = user.carts;
-		const index = cart.findIndex((item) => item.productId === productId);
+		const item = cart.find((item) => item.productId === productId);
 
-		user.carts[index].quantity--;
+		item!.quantity--;
 		await user.save();
 		return res.send('Cart updated');
 	} catch (error: any) {
