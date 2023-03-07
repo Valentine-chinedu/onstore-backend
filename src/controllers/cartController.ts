@@ -24,7 +24,7 @@ export const addToCart = async (
 		const cart = user.carts;
 		const index = cart.findIndex((item) => item.productId === productId);
 
-		if (index === -1) {
+		if (index < 0) {
 			user.carts.push({
 				productId,
 				quantity,
@@ -54,7 +54,7 @@ export const removeFromCart = async (
 
 		const cart = user.carts;
 		const index = cart.findIndex((item) => item.productId === productId);
-		if (index === -1) return res.status(404).send('Product not found in cart');
+		if (index < 0) return res.status(404).send('Product not found in cart');
 
 		user.carts.splice(index, 1);
 		await user.save();
