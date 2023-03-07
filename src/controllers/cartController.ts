@@ -43,6 +43,24 @@ export const addToCart = async (
 	}
 };
 
+export const getCart = async (
+	req: Request<{}, {}, IRequest>,
+	res: Response
+) => {
+	try {
+		const { userId } = req.body;
+		const user = await User.findById(userId);
+		if (!user) return res.status(404).send('User not found');
+
+		const cart = user.carts;
+		if (!cart) return res.status(404).send('Cart not found');
+
+		return res.send(cart);
+	} catch (error: any) {
+		return res.status(500).send(error.message);
+	}
+};
+
 export const removeFromCart = async (
 	req: Request<{}, {}, IRequest>,
 	res: Response
@@ -116,20 +134,6 @@ export const decreaseCartQty = async (
 		user.carts[index].quantity--;
 		await user.save();
 		return res.send('Cart updated');
-	} catch (error: any) {
-		return res.status(500).send(error.message);
-	}
-};
-
-export const getCart = async (req: Request, res: Response) => {
-	try {
-		const user = await User.findById(req.params.userId);
-		if (!user) return res.status(404).send('User not found');
-
-		const cart = user.carts;
-		if (!cart) return res.status(404).send('Cart not found');
-
-		return res.send(cart);
 	} catch (error: any) {
 		return res.status(500).send(error.message);
 	}
