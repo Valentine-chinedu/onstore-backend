@@ -24,7 +24,7 @@ export const addToCart = async (
 		const cart = user.carts;
 		const item = cart.find((item) => item.productId === productId);
 
-		if (item) {
+		if (item?.productId === productId) {
 			item.quantity++;
 		} else {
 			user.carts.push({

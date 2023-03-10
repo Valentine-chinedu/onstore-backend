@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCart = exports.decreaseCartQty = exports.increaseCartQty = exports.emptyCart = exports.removeFromCart = exports.addToCart = void 0;
+exports.decreaseCartQty = exports.increaseCartQty = exports.emptyCart = exports.removeFromCart = exports.addToCart = void 0;
 const productModel_1 = __importDefault(require("../models/productModel"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -25,8 +25,11 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!product)
             return res.status(404).send('Product not found');
         const cart = user.carts;
-        const index = cart.findIndex((item) => item.productId === productId);
-        if (index === -1) {
+        const item = cart.find((item) => item.productId === productId);
+        if ((item === null || item === void 0 ? void 0 : item.productId) === productId) {
+            item.quantity++;
+        }
+        else {
             user.carts.push({
                 productId,
                 quantity,
@@ -34,9 +37,6 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 price: product.price,
                 image: product.image,
             });
-        }
-        else {
-            user.carts[index].quantity += quantity;
         }
         yield user.save();
         return res.send('Product added to cart');
@@ -52,11 +52,7 @@ const removeFromCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const user = yield userModel_1.default.findById(userId);
         if (!user)
             return res.status(404).send('User not found');
-        const cart = user.carts;
-        const index = cart.findIndex((item) => item.productId === productId);
-        if (index === -1)
-            return res.status(404).send('Product not found in cart');
-        user.carts.splice(index, 1);
+        user.carts = user.carts.filter((item) => item.productId !== productId);
         yield user.save();
         return res.send('Product removed from cart');
     }
@@ -87,8 +83,8 @@ const increaseCartQty = (req, res) => __awaiter(void 0, void 0, void 0, function
         if (!user)
             return res.status(404).send('User not found');
         const cart = user.carts;
-        const index = cart.findIndex((item) => item.productId === productId);
-        user.carts[index].quantity++;
+        const item = cart.find((item) => item.productId === productId);
+        item.quantity++;
         yield user.save();
         return res.send('Cart updated');
     }
@@ -104,8 +100,8 @@ const decreaseCartQty = (req, res) => __awaiter(void 0, void 0, void 0, function
         if (!user)
             return res.status(404).send('User not found');
         const cart = user.carts;
-        const index = cart.findIndex((item) => item.productId === productId);
-        user.carts[index].quantity--;
+        const item = cart.find((item) => item.productId === productId);
+        item.quantity--;
         yield user.save();
         return res.send('Cart updated');
     }
@@ -114,18 +110,3 @@ const decreaseCartQty = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.decreaseCartQty = decreaseCartQty;
-const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const user = yield userModel_1.default.findById(req.params.userId);
-        if (!user)
-            return res.status(404).send('User not found');
-        const cart = user.carts;
-        if (!cart)
-            return res.status(404).send('Cart not found');
-        return res.send(cart);
-    }
-    catch (error) {
-        return res.status(500).send(error.message);
-    }
-});
-exports.getCart = getCart;
