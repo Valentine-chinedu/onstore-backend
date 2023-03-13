@@ -2,11 +2,12 @@
 	"name": "onstore_backend",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index",
+	"main": "dist/server.js",
 	"scripts": {
+		"clean": "rm -rf dist",
 		"build": "tsc",
 		"dev": "nodemon src/server.ts",
-		"start": "node ./dist/server.js"
+		"start": "npm run clean && npm run build && node ./dist/server.js"
 	},
 	"author": "",
 	"license": "ISC",

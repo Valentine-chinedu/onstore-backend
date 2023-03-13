@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import Product from '../models/productModel';
 import User from '../models/userModel';
 
-interface IRequest extends Request {
+export interface IRequest extends Request {
 	userId: string;
 	productId: string;
 	quantity: number;
@@ -25,7 +25,7 @@ export const addToCart = async (
 		const item = cart.find((item) => item.productId === productId);
 
 		if (item?.productId === productId) {
-			item.quantity++;
+			item!.quantity++;
 		} else {
 			user.carts.push({
 				productId,
@@ -50,6 +50,7 @@ export const removeFromCart = async (
 	try {
 		const { userId, productId } = req.body;
 		const user = await User.findById(userId);
+
 		if (!user) return res.status(404).send('User not found');
 
 		user.carts = user.carts.filter((item) => item.productId !== productId);
@@ -60,12 +61,9 @@ export const removeFromCart = async (
 	}
 };
 
-export const emptyCart = async (
-	req: Request<{}, {}, IRequest>,
-	res: Response
-) => {
+export const emptyCart = async (req: Request<IRequest>, res: Response) => {
 	try {
-		const { userId } = req.body;
+		const userId = req.params.userId;
 		const user = await User.findById(userId);
 		if (!user) return res.status(404).send('User not found');
 
