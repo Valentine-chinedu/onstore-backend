@@ -50,7 +50,8 @@ const removeFromCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const { userId, productId } = req.body;
         const user = yield userModel_1.default.findById(userId);
-        // if (!user) return res.status(404).send('User not found');
+        if (!user)
+            return res.status(404).send('User not found');
         user.carts = user.carts.filter((item) => item.productId !== productId);
         yield user.save();
         return res.send('Product removed from cart');
