@@ -25,56 +25,53 @@ const uidgen = new uid_generator_1.default();
 // @desc    payment with stripe
 // @route   Post /api/orders/stripe
 // @access  Private
-// export const stripePay = asyncHandler(async (req: Request, res: Response) => {
-// 	const { token, amount } = req.body;
-// 	const idempotencyKey = await uidgen.generate();
-// 	return stripe.customers
-// 		.create({
-// 			email: token?.email,
-// 			source: token,
-// 		})
-// 		.then((customer) => {
-// 			stripe.charges.create(
-// 				{
-// 					amount: amount * 100,
-// 					currency: 'usd',
-// 					customer: customer.id,
-// 					receipt_email: token?.email,
-// 				},
-// 				{ idempotencyKey }
-// 			);
-// 		})
-// 		.then((result) => {
-// 			res.status(200).json(result);
-// 		});
-// });
 exports.stripePay = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { token, amount } = req.body;
     const idempotencyKey = yield uidgen.generate();
-    const customer = yield stripe.customers.createSource(token === null || token === void 0 ? void 0 : token.customer, {
-        source: token === null || token === void 0 ? void 0 : token.id,
+    return stripe.customers
+        .create({
+        email: token === null || token === void 0 ? void 0 : token.email,
+        source: token,
+    })
+        .then((customer) => {
+        stripe.charges.create({
+            amount: amount * 100,
+            currency: 'usd',
+            customer: customer.id,
+            receipt_email: token === null || token === void 0 ? void 0 : token.email,
+        }, { idempotencyKey });
+    })
+        .then((result) => {
+        res.status(200).json(result);
     });
-    const session = yield stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-            {
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: 'Payment',
-                    },
-                    unit_amount: amount * 100,
-                },
-                quantity: 1,
-            },
-        ],
-        mode: 'payment',
-        customer: customer.id,
-        success_url: 'http://localhost:3000/success',
-        cancel_url: 'http://localhost:3000/cancel',
-    });
-    res.json({ id: session.id });
 }));
+// export const stripePay = asyncHandler(async (req: Request, res: Response) => {
+// 	const { token, amount } = req.body;
+// 	const idempotencyKey = await uidgen.generate();
+// 	const customer = await stripe.customers.createSource(token?.customer, {
+// 		source: token?.id,
+// 	});
+// 	const session = await stripe.checkout.sessions.create({
+// 		payment_method_types: ['card'],
+// 		line_items: [
+// 			{
+// 				price_data: {
+// 					currency: 'usd',
+// 					product_data: {
+// 						name: 'Payment',
+// 					},
+// 					unit_amount: amount * 100,
+// 				},
+// 				quantity: 1,
+// 			},
+// 		],
+// 		mode: 'payment',
+// 		customer: customer.id,
+// 		success_url: 'http://localhost:3000/success',
+// 		cancel_url: 'http://localhost:3000/cancel',
+// 	});
+// 	res.json({ id: session.id });
+// });
 exports.mobileStripePayment = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const paymentIntent = yield stripe.paymentIntents.create({
