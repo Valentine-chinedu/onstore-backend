@@ -57,7 +57,7 @@ export const payOrder = asyncHandler(async (req: Request, res: Response) => {
 
 export const getOrderById = asyncHandler(
 	async (req: Request, res: Response) => {
-		const order = await Order.findById(req.params.id);
+		const order = await Order.findById(req.params._id);
 
 		if (order) {
 			res.status(200).json(order);

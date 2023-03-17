@@ -60,7 +60,7 @@ exports.payOrder = (0, express_async_handler_1.default)((req, res) => __awaiter(
 // @route   GET /api/orders/:id
 // @access  Private
 exports.getOrderById = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const order = yield orderModel_1.default.findById(req.params.id);
+    const order = yield orderModel_1.default.findById(req.params._id);
     if (order) {
         res.status(200).json(order);
     }
