@@ -10,7 +10,7 @@ fullstack E-commerce web-app built to diplay and sell clothing items to costumer
 - Expressjs
 - MongoDb
 - Stripe
-- 
+
 
 ## Live Application
 
