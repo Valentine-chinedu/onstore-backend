@@ -11,12 +11,49 @@ import { errorHandler, notFound } from './middleware/errorMiddleware';
 import cors from 'cors';
 import path from 'path';
 import sanitizedConfig from './config';
+import axios from 'axios';
 
 dotenv.config({
 	path: path.resolve(__dirname, '/.env'),
 });
 
 connectDb();
+
+//Reloader Function
+
+const url = `https://onstore-server.onrender.com`;
+const interval = 300000; // 5 minutes
+
+//Reloader Function
+
+let reloadFailures = 0;
+function reloadWebsite() {
+	axios
+		.get(url)
+		.then((response) => {
+			reloadFailures = 0;
+			console.log(
+				`Reloaded at ${new Date().toISOString()}: Status Code ${
+					response.status
+				}`
+			);
+		})
+		.catch((error) => {
+			reloadFailures++;
+			console.error(
+				`Error reloading at ${new Date().toISOString()} (failure #${reloadFailures}):`,
+				error.message
+			);
+			if (reloadFailures >= 3) {
+				console.error(
+					'Reloader has failed 3 times in a row. Check server status or network connection.'
+				);
+				reloadFailures = 0;
+			}
+		});
+}
+
+setInterval(reloadWebsite, interval);
 
 const app: Application = express();
 
