@@ -21,13 +21,13 @@ connectDb();
 
 //Reloader Function
 
-const reloadUrl = 'https://onstore-server.onrender.com';
-const reloadInterval = 300000; // 5 minutes
-let reloadFailures = 0;
+const url = 'https://onstore-server.onrender.com';
+const interval = 300000; // 5 minutes
 
+let reloadFailures = 0;
 function reloadWebsite() {
 	axios
-		.get(reloadUrl)
+		.get(url)
 		.then((response) => {
 			reloadFailures = 0;
 			console.log(
@@ -51,7 +51,7 @@ function reloadWebsite() {
 		});
 }
 
-setInterval(reloadWebsite, reloadInterval);
+setInterval(reloadWebsite, interval);
 
 const app: Application = express();
 
