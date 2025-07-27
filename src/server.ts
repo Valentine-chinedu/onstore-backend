@@ -14,22 +14,20 @@ import sanitizedConfig from './config';
 import axios from 'axios';
 
 dotenv.config({
-	path: path.resolve(__dirname, '/.env'),
+	path: path.resolve(__dirname, '.env'),
 });
 
 connectDb();
 
 //Reloader Function
 
-const url = `https://onstore-server.onrender.com`;
-const interval = 300000; // 5 minutes
-
-//Reloader Function
-
+const reloadUrl = 'https://onstore-server.onrender.com';
+const reloadInterval = 300000; // 5 minutes
 let reloadFailures = 0;
+
 function reloadWebsite() {
 	axios
-		.get(url)
+		.get(reloadUrl)
 		.then((response) => {
 			reloadFailures = 0;
 			console.log(
@@ -53,7 +51,7 @@ function reloadWebsite() {
 		});
 }
 
-setInterval(reloadWebsite, interval);
+setInterval(reloadWebsite, reloadInterval);
 
 const app: Application = express();
 
